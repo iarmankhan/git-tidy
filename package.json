@@ -1,17 +1,24 @@
 {
-  "name": "git-tidy",
+  "name": "git-tidy-cli",
   "version": "1.0.0",
-  "description": "Interactive CLI tool for cleaning up unused git branches",
+  "description": "Interactive CLI tool for cleaning up unused git branches with a beautiful TUI",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "git-tidy": "./bin/git-tidy.js"
   },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "git",
@@ -19,10 +26,22 @@
     "cleanup",
     "cli",
     "tui",
-    "github"
+    "github",
+    "prune",
+    "delete",
+    "interactive",
+    "terminal"
   ],
-  "author": "",
+  "author": "Arman",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArmandBrworworworx/git-tidy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArmandBrworworworx/git-tidy/issues"
+  },
+  "homepage": "https://github.com/ArmandBrworworworx/git-tidy#readme",
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
     "@octokit/rest": "^21.0.0",

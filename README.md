@@ -19,6 +19,13 @@ An interactive CLI tool for cleaning up unused git branches. Built with [Ink](ht
 ## Installation
 
 ```bash
+# Install globally from npm
+npm install -g git-tidy-cli
+```
+
+### From source
+
+```bash
 # Clone the repository
 git clone https://github.com/ArmandBrworworworx/git-tidy.git
 cd git-tidy
