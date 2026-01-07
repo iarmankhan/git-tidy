@@ -16,6 +16,7 @@ export function BranchSelectStep({
   onBack,
 }: BranchSelectStepProps) {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectKey, setSelectKey] = useState(0);
 
   // Create options for MultiSelect
   const options = useMemo(() => {
@@ -53,11 +54,13 @@ export function BranchSelectStep({
     // Select all
     if (input === 'a') {
       setSelectedValues(branches.map((b) => b.name));
+      setSelectKey(k => k + 1);
     }
 
     // Select none
     if (input === 'n') {
       setSelectedValues([]);
+      setSelectKey(k => k + 1);
     }
 
     // Invert selection
@@ -66,6 +69,7 @@ export function BranchSelectStep({
         .filter((b) => !selectedValues.includes(b.name))
         .map((b) => b.name);
       setSelectedValues(inverted);
+      setSelectKey(k => k + 1);
     }
   });
 
@@ -114,6 +118,7 @@ export function BranchSelectStep({
 
       <Box marginLeft={2} flexDirection="column">
         <MultiSelect
+          key={selectKey}
           options={options}
           defaultValue={selectedValues}
           onChange={handleChange}
