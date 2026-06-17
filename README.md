@@ -141,6 +141,28 @@ Example `--json` output:
 The process exits non-zero if a deletion fails (or on invalid input), so scripts can
 check the exit code. Protected and current branches are always excluded automatically.
 
+## AI agent skill
+
+This repo ships a [Claude Code](https://claude.com/claude-code) **skill** that teaches an
+AI agent how to use git-tidy safely (preview-first workflow, the safety model, and the
+filter recipes). It lives at [`.claude/skills/git-tidy/`](.claude/skills/git-tidy/).
+
+To install it for your agent, copy it into your skills directory:
+
+```bash
+# user-level (available in all repos)
+cp -r .claude/skills/git-tidy ~/.claude/skills/
+
+# or project-level (this repo only) — already present here
+```
+
+If you installed git-tidy from npm, the skill is also bundled in the package at
+`node_modules/git-tidy-cli/.claude/skills/git-tidy/`.
+
+Once installed, ask your agent things like *"tidy up the merged branches older than 90
+days on origin"* and it will run the dry-run, show you the matches, and delete only after
+you confirm.
+
 ## Workflow
 
 1. **Scope Selection** - Choose to clean local, remote, or both
