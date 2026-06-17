@@ -4,6 +4,9 @@ export type BranchScope = 'local' | 'remote' | 'both';
 // Filter criteria types
 export type FilterCriteria = 'merged' | 'stale' | 'pattern' | 'age';
 
+// How active filters combine: 'any' = OR (match any), 'all' = AND (match all)
+export type MatchMode = 'any' | 'all';
+
 export interface FilterOptions {
   merged: boolean;
   stale: boolean;
@@ -12,6 +15,9 @@ export interface FilterOptions {
   patternValue: string;
   age: boolean;
   ageDays: number;
+  newerThan: boolean;
+  newerThanDays: number;
+  matchMode: MatchMode;
 }
 
 // Branch information
@@ -82,8 +88,11 @@ export interface CLIOptions {
   staleDays: number;
   age: boolean;
   ageDays: number;
+  newerThan: boolean;
+  newerThanDays: number;
   pattern: boolean;
   patternValue: string;
+  matchMode: MatchMode;
 }
 
 // App state

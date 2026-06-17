@@ -1,6 +1,7 @@
 // Default configuration values
 export const DEFAULT_STALE_DAYS = 30;
 export const DEFAULT_AGE_DAYS = 60;
+export const DEFAULT_NEWER_DAYS = 7;
 
 // Protected branch patterns (in addition to auto-detected default branch)
 export const PROTECTED_PATTERNS = [

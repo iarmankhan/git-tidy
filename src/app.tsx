@@ -23,7 +23,7 @@ import type {
   DeletionSummary,
   CLIOptions,
 } from './types/index.js';
-import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS } from './utils/config.js';
+import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS, DEFAULT_NEWER_DAYS } from './utils/config.js';
 
 interface AppProps {
   options: CLIOptions;
@@ -43,6 +43,9 @@ export function App({ options }: AppProps) {
     patternValue: '',
     age: false,
     ageDays: DEFAULT_AGE_DAYS,
+    newerThan: false,
+    newerThanDays: DEFAULT_NEWER_DAYS,
+    matchMode: 'any',
   });
   const [allBranches, setAllBranches] = useState<Branch[]>([]);
   const [filteredBranches, setFilteredBranches] = useState<Branch[]>([]);

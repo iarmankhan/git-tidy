@@ -38,3 +38,10 @@ export function formatDaysAgo(date: Date): string {
 export function isOlderThan(date: Date, days: number): boolean {
   return daysAgo(date) > days;
 }
+
+/**
+ * Check if a date is newer than (within) X days
+ */
+export function isNewerThan(date: Date, days: number): boolean {
+  return daysAgo(date) <= days;
+}

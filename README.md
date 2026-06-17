@@ -59,9 +59,11 @@ git-tidy
 | `-t, --token <token>` | GitHub personal access token (or use `GITHUB_TOKEN` env) |
 | `--json` | Output machine-readable JSON (implies non-interactive mode) |
 | `--scope <scope>` | Branch scope: `local`, `remote`, or `both` (default: `both`) |
+| `--match <mode>` | How filters combine: `any` (OR, default) or `all` (AND) |
 | `--merged` | Select branches already merged into the default branch |
 | `--stale [days]` | Select branches with no commits in N days (default: 30) |
 | `--age [days]` | Select branches older than N days (default: 60) |
+| `--newer-than [days]` | Select branches with a commit within the last N days (default: 7) |
 | `--pattern <glob>` | Select branches whose name matches a glob (e.g. `"feature/*"`) |
 | `-V, --version` | Show version |
 | `-h, --help` | Show help |
@@ -100,6 +102,24 @@ git-tidy --stale 30 --pattern 'feature/*' --json
 
 # Actually delete local merged branches, no prompts
 git-tidy --merged --scope local --execute --yes
+```
+
+### Combining filters: `--match any` (OR) vs `--match all` (AND)
+
+By default, multiple filters are OR'd — a branch matches if it matches **any**
+of them. Use `--match all` to require **all** active filters (AND), which lets
+you target a precise intersection like "sync branches older than a week" or
+"merged feature branches older than 90 days":
+
+```bash
+# AND: sync-* branches older than 1 week (not just any sync branch)
+git-tidy --match all --pattern 'sync-*' --age 7 --json
+
+# AND: sync-* branches NEWER than 1 week (--newer-than is the inverse of --age)
+git-tidy --match all --pattern 'sync-*' --newer-than 7 --json
+
+# AND: feature branches merged into the default branch AND older than 90 days
+git-tidy --match all --merged --pattern 'feature/*' --age 90 --scope remote --json
 ```
 
 Example `--json` output:

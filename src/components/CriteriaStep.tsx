@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { MultiSelect, TextInput } from '@inkjs/ui';
 import type { FilterOptions, FilterCriteria } from '../types/index.js';
-import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS } from '../utils/config.js';
+import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS, DEFAULT_NEWER_DAYS } from '../utils/config.js';
 
 interface CriteriaStepProps {
   onSelect: (filters: FilterOptions) => void;
@@ -94,6 +94,9 @@ export function CriteriaStep({ onSelect, onBack }: CriteriaStepProps) {
       patternValue: pattern,
       age: selectedCriteria.includes('age'),
       ageDays: parseInt(ageDays, 10) || DEFAULT_AGE_DAYS,
+      newerThan: false,
+      newerThanDays: DEFAULT_NEWER_DAYS,
+      matchMode: 'any',
     };
 
     onSelect(filters);
@@ -175,6 +178,9 @@ export function CriteriaStep({ onSelect, onBack }: CriteriaStepProps) {
               patternValue: value,
               age: selectedCriteria.includes('age'),
               ageDays: parseInt(ageDays, 10) || DEFAULT_AGE_DAYS,
+              newerThan: false,
+              newerThanDays: DEFAULT_NEWER_DAYS,
+              matchMode: 'any',
             };
             onSelect(filters);
           }}

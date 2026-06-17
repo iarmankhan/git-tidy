@@ -1,8 +1,9 @@
 import { Command } from 'commander';
-import type { BranchScope, CLIOptions } from './types/index.js';
-import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS } from './utils/config.js';
+import type { BranchScope, CLIOptions, MatchMode } from './types/index.js';
+import { DEFAULT_STALE_DAYS, DEFAULT_AGE_DAYS, DEFAULT_NEWER_DAYS } from './utils/config.js';
 
 const VALID_SCOPES: BranchScope[] = ['local', 'remote', 'both'];
+const VALID_MATCH_MODES: MatchMode[] = ['any', 'all'];
 
 /**
  * Parse an optional numeric flag value (e.g. `--stale` or `--stale 14`).
@@ -29,16 +30,18 @@ export function createCLI(): CLIOptions {
         '--merged/--stale/--age/--pattern (or --json) to run non-interactively — ideal\n' +
         'for scripts and agents. Defaults to a dry run; add --execute to delete.'
     )
-    .version('2.0.0')
+    .version('2.1.0')
     .option('-x, --execute', 'Actually delete branches (default: dry-run mode)', false)
     .option('--dry-run', 'Preview only; never delete (this is the default)', false)
     .option('-y, --yes', 'Skip all confirmations (for scripting)', false)
     .option('-t, --token <token>', 'GitHub personal access token (or use GITHUB_TOKEN env)')
     .option('--json', 'Output machine-readable JSON (implies non-interactive mode)', false)
     .option('--scope <scope>', 'Branch scope: local, remote, or both', 'both')
+    .option('--match <mode>', 'How filters combine: "any" (OR) or "all" (AND)', 'any')
     .option('--merged', 'Select branches already merged into the default branch', false)
     .option('--stale [days]', `Select branches with no commits in N days (default: ${DEFAULT_STALE_DAYS})`)
     .option('--age [days]', `Select branches older than N days (default: ${DEFAULT_AGE_DAYS})`)
+    .option('--newer-than [days]', `Select branches with a commit within the last N days (default: ${DEFAULT_NEWER_DAYS})`)
     .option('--pattern <glob>', 'Select branches whose name matches a glob (e.g. "feature/*")')
     .parse();
 
@@ -51,15 +54,24 @@ export function createCLI(): CLIOptions {
     );
   }
 
+  const matchMode = String(opts.match) as MatchMode;
+  if (!VALID_MATCH_MODES.includes(matchMode)) {
+    program.error(
+      `error: invalid --match "${opts.match}" (expected one of: ${VALID_MATCH_MODES.join(', ')})`
+    );
+  }
+
   const staleProvided = opts.stale !== undefined;
   const ageProvided = opts.age !== undefined;
+  const newerProvided = opts.newerThan !== undefined;
   const merged = Boolean(opts.merged);
   const patternProvided = typeof opts.pattern === 'string' && opts.pattern.length > 0;
   const json = Boolean(opts.json);
 
   // Headless mode is triggered by any selection flag or by requesting JSON.
   // Bare `git-tidy` (and flags like --execute/--token alone) keep the wizard.
-  const headless = merged || staleProvided || ageProvided || patternProvided || json;
+  const headless =
+    merged || staleProvided || ageProvided || newerProvided || patternProvided || json;
 
   return {
     execute: Boolean(opts.execute) && !opts.dryRun,
@@ -68,11 +80,14 @@ export function createCLI(): CLIOptions {
     headless,
     json,
     scope,
+    matchMode,
     merged,
     stale: staleProvided,
     staleDays: parseOptionalDays(opts.stale, DEFAULT_STALE_DAYS),
     age: ageProvided,
     ageDays: parseOptionalDays(opts.age, DEFAULT_AGE_DAYS),
+    newerThan: newerProvided,
+    newerThanDays: parseOptionalDays(opts.newerThan, DEFAULT_NEWER_DAYS),
     pattern: patternProvided,
     patternValue: patternProvided ? String(opts.pattern) : '',
   };

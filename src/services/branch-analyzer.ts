@@ -1,5 +1,5 @@
 import type { Branch, FilterOptions, BranchScope } from '../types/index.js';
-import { isOlderThan } from '../utils/date.js';
+import { isOlderThan, isNewerThan } from '../utils/date.js';
 import {
   getLocalBranches,
   getRemoteBranches,
@@ -46,50 +46,57 @@ export async function fetchBranches(
 }
 
 /**
- * Apply all filters to branches
+ * Apply all filters to branches.
+ *
+ * Protected and current branches are always excluded. Active filters combine
+ * according to `filters.matchMode`: 'any' (OR — matches any active filter, the
+ * default) or 'all' (AND — must match every active filter). With no active
+ * filters, all non-protected branches are returned.
  */
 export function filterBranches(
   branches: Branch[],
   filters: FilterOptions
 ): Branch[] {
-  let filtered = [...branches];
-
   // Always exclude protected and current branches
-  filtered = filtered.filter((b) => !b.isProtected && !b.isCurrentBranch);
+  const candidates = branches.filter(
+    (b) => !b.isProtected && !b.isCurrentBranch
+  );
 
-  // If no filters selected, return all non-protected branches
   const hasFilters =
-    filters.merged || filters.stale || filters.pattern || filters.age;
+    filters.merged ||
+    filters.stale ||
+    filters.age ||
+    filters.newerThan ||
+    (filters.pattern && Boolean(filters.patternValue));
 
   if (!hasFilters) {
-    return filtered;
+    return candidates;
   }
 
-  // Apply filters (OR logic - branch matches if it matches ANY filter)
-  filtered = filtered.filter((branch) => {
-    const matches: boolean[] = [];
+  return candidates.filter((branch) => {
+    // Each active filter contributes one predicate result.
+    const results: boolean[] = [];
 
     if (filters.merged) {
-      matches.push(branch.isMerged);
+      results.push(branch.isMerged);
     }
-
     if (filters.stale) {
-      matches.push(isOlderThan(branch.lastCommitDate, filters.staleDays));
+      results.push(isOlderThan(branch.lastCommitDate, filters.staleDays));
     }
-
     if (filters.age) {
-      matches.push(isOlderThan(branch.lastCommitDate, filters.ageDays));
+      results.push(isOlderThan(branch.lastCommitDate, filters.ageDays));
     }
-
+    if (filters.newerThan) {
+      results.push(isNewerThan(branch.lastCommitDate, filters.newerThanDays));
+    }
     if (filters.pattern && filters.patternValue) {
-      matches.push(matchesPattern(branch.name, filters.patternValue));
+      results.push(matchesPattern(branch.name, filters.patternValue));
     }
 
-    // Return true if branch matches any of the active filters
-    return matches.some((m) => m === true);
+    return filters.matchMode === 'all'
+      ? results.every((m) => m === true)
+      : results.some((m) => m === true);
   });
-
-  return filtered;
 }
 
 /**

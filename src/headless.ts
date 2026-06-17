@@ -23,6 +23,7 @@ function activeCriteria(filters: FilterOptions): string[] {
   if (filters.merged) criteria.push('merged');
   if (filters.stale) criteria.push(`stale>${filters.staleDays}d`);
   if (filters.age) criteria.push(`age>${filters.ageDays}d`);
+  if (filters.newerThan) criteria.push(`newer<${filters.newerThanDays}d`);
   if (filters.pattern) criteria.push(`pattern:${filters.patternValue}`);
   return criteria;
 }
@@ -37,8 +38,11 @@ export async function runHeadless(options: CLIOptions): Promise<number> {
     staleDays: options.staleDays,
     age: options.age,
     ageDays: options.ageDays,
+    newerThan: options.newerThan,
+    newerThanDays: options.newerThanDays,
     pattern: options.pattern,
     patternValue: options.patternValue,
+    matchMode: options.matchMode,
   };
   const criteria = activeCriteria(filters);
 
@@ -99,6 +103,7 @@ export async function runHeadless(options: CLIOptions): Promise<number> {
           dryRun,
           scope: options.scope,
           defaultBranch: info.defaultBranch,
+          match: options.matchMode,
           criteria,
           matched: matched.map((branch) => ({
             name: branch.name,
@@ -119,7 +124,8 @@ export async function runHeadless(options: CLIOptions): Promise<number> {
   // Human-readable text output.
   const repoLabel = info.owner && info.repo ? `${info.owner}/${info.repo}` : info.currentBranch;
   console.log(`Repository: ${repoLabel}  (default: ${info.defaultBranch})`);
-  console.log(`Scope: ${options.scope}  Criteria: ${criteria.length ? criteria.join(', ') : '(none — all unprotected branches)'}`);
+  const joiner = options.matchMode === 'all' ? ' AND ' : ' OR ';
+  console.log(`Scope: ${options.scope}  Criteria: ${criteria.length ? criteria.join(joiner) : '(none — all unprotected branches)'}`);
   console.log('');
 
   if (matched.length === 0) {
