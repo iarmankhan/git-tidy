@@ -1,4 +1,5 @@
 import React from 'react';
+import { basename } from 'node:path';
 import { Box, Text } from 'ink';
 import type { RepoInfo } from '../types/index.js';
 
@@ -7,6 +8,10 @@ interface HeaderProps {
 }
 
 export function Header({ repoInfo }: HeaderProps) {
+  const repoName =
+    repoInfo && repoInfo.owner && repoInfo.repo
+      ? `${repoInfo.owner}/${repoInfo.repo}`
+      : basename(process.cwd());
   return (
     <Box
       flexDirection="column"
@@ -27,9 +32,7 @@ export function Header({ repoInfo }: HeaderProps) {
         <Box gap={2}>
           <Text color="gray">
             Repository:{' '}
-            <Text color="white">
-              {repoInfo.owner}/{repoInfo.repo}
-            </Text>
+            <Text color="white">{repoName}</Text>
           </Text>
           <Text color="gray">
             Branch:{' '}

@@ -73,6 +73,17 @@ export interface CLIOptions {
   execute: boolean;
   yes: boolean;
   token?: string;
+  // Non-interactive (headless) mode
+  headless: boolean;
+  json: boolean;
+  scope: BranchScope;
+  merged: boolean;
+  stale: boolean;
+  staleDays: number;
+  age: boolean;
+  ageDays: number;
+  pattern: boolean;
+  patternValue: string;
 }
 
 // App state

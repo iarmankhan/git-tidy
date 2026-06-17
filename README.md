@@ -15,6 +15,7 @@ An interactive CLI tool for cleaning up unused git branches. Built with [Ink](ht
 - **Batch selection** - Select all, none, or invert selection with keyboard shortcuts
 - **Local & remote** - Delete both local and remote branches in one go
 - **Delete after dry-run** - Option to execute deletion right after reviewing dry-run results
+- **Non-interactive mode** - Run headless with flags and JSON output for scripts, CI, and AI agents
 
 ## Installation
 
@@ -53,8 +54,15 @@ git-tidy
 | Flag | Description |
 |------|-------------|
 | `-x, --execute` | Actually delete branches (default: dry-run mode) |
+| `--dry-run` | Preview only; never delete (this is the default) |
 | `-y, --yes` | Skip confirmations (for scripting) |
 | `-t, --token <token>` | GitHub personal access token (or use `GITHUB_TOKEN` env) |
+| `--json` | Output machine-readable JSON (implies non-interactive mode) |
+| `--scope <scope>` | Branch scope: `local`, `remote`, or `both` (default: `both`) |
+| `--merged` | Select branches already merged into the default branch |
+| `--stale [days]` | Select branches with no commits in N days (default: 30) |
+| `--age [days]` | Select branches older than N days (default: 60) |
+| `--pattern <glob>` | Select branches whose name matches a glob (e.g. `"feature/*"`) |
 | `-V, --version` | Show version |
 | `-h, --help` | Show help |
 
@@ -72,6 +80,46 @@ git-tidy --token ghp_xxxxxxxxxxxx
 # or
 GITHUB_TOKEN=ghp_xxxxxxxxxxxx git-tidy
 ```
+
+## Non-interactive mode (scripts & agents)
+
+Passing any selection flag (`--merged`, `--stale`, `--age`, `--pattern`) or `--json`
+switches git-tidy into a headless mode — no wizard, no prompts. It stays **dry-run by
+default**; add `--execute` to actually delete. This makes it easy to drive from scripts,
+CI pipelines, or AI agents.
+
+```bash
+# List local merged branches that would be deleted (dry-run, human-readable)
+git-tidy --merged --scope local
+
+# Same, as JSON for machine parsing
+git-tidy --merged --scope local --json
+
+# Combine criteria (OR logic): stale OR matching a pattern
+git-tidy --stale 30 --pattern 'feature/*' --json
+
+# Actually delete local merged branches, no prompts
+git-tidy --merged --scope local --execute --yes
+```
+
+Example `--json` output:
+
+```json
+{
+  "dryRun": true,
+  "scope": "local",
+  "defaultBranch": "main",
+  "criteria": ["merged"],
+  "matched": [
+    { "name": "feature/login", "merged": true, "location": "local", "lastCommit": "2026-06-17T08:18:11.000Z" }
+  ],
+  "deleted": [],
+  "errors": []
+}
+```
+
+The process exits non-zero if a deletion fails (or on invalid input), so scripts can
+check the exit code. Protected and current branches are always excluded automatically.
 
 ## Workflow
 
