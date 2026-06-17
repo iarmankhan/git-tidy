@@ -141,28 +141,22 @@ Example `--json` output:
 The process exits non-zero if a deletion fails (or on invalid input), so scripts can
 check the exit code. Protected and current branches are always excluded automatically.
 
-## AI agent guide
+## Agent skill
 
-This repo ships an **agent skill** at [`skills/git-tidy/`](skills/git-tidy/) — a portable
-markdown guide ([`SKILL.md`](skills/git-tidy/SKILL.md) + [`EXAMPLES.md`](skills/git-tidy/EXAMPLES.md),
-with YAML frontmatter) that teaches any AI coding agent to use git-tidy safely: the
-preview-first workflow, the safety model, and the filter recipes. It's not tied to any
-specific agent — it's just instructions an agent reads.
+git-tidy ships a skill at [`skills/git-tidy/`](skills/git-tidy/) that teaches an AI agent
+to use git-tidy safely — the preview-first workflow, the safety model, and the filter
+recipes.
 
-Use it with whatever agent you run:
+Install it into your agent's skills directory:
 
-- **Skill/plugin-aware agents** (e.g. Claude Code): copy the folder into your skills
-  directory — `cp -r skills/git-tidy ~/.claude/skills/`.
-- **Rules/context-based agents** (e.g. Cursor, Windsurf): point a rule at
-  `skills/git-tidy/SKILL.md`, or paste its contents into your agent's context/config.
-- **Any agent:** it's plain markdown — hand it the file.
+```bash
+cp -r skills/git-tidy ~/.claude/skills/
+```
 
-If you installed git-tidy from npm, the guide is bundled at
-`node_modules/git-tidy-cli/skills/git-tidy/`.
+If you installed git-tidy from npm, it's bundled at `node_modules/git-tidy-cli/skills/git-tidy/`.
 
-Once your agent has it, ask things like *"tidy up the merged branches older than 90 days
-on origin"* — it will run the dry-run, show you the matches, and delete only after you
-confirm.
+Then ask your agent things like *"tidy up the merged branches older than 90 days on
+origin"* — it'll dry-run, show you the matches, and delete only after you confirm.
 
 ## Workflow
 
