@@ -29,7 +29,7 @@ export function createCLI(): CLIOptions {
         '--merged/--stale/--age/--pattern (or --json) to run non-interactively — ideal\n' +
         'for scripts and agents. Defaults to a dry run; add --execute to delete.'
     )
-    .version('1.0.1')
+    .version('2.0.0')
     .option('-x, --execute', 'Actually delete branches (default: dry-run mode)', false)
     .option('--dry-run', 'Preview only; never delete (this is the default)', false)
     .option('-y, --yes', 'Skip all confirmations (for scripting)', false)

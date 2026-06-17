@@ -1,6 +1,6 @@
 {
   "name": "git-tidy-cli",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Interactive CLI tool for cleaning up unused git branches with a beautiful TUI",
   "type": "module",
   "main": "dist/index.js",
