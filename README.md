@@ -17,37 +17,37 @@ An interactive CLI tool for cleaning up unused git branches. Built with [Ink](ht
 - **Delete after dry-run** - Option to execute deletion right after reviewing dry-run results
 - **Non-interactive mode** - Run headless with flags and JSON output for scripts, CI, and AI agents
 
-## Installation
-
-```bash
-# Install globally from npm
-npm install -g git-tidy-cli
-```
-
-### From source
-
-```bash
-# Clone the repository
-git clone https://github.com/ArmandBrworworworx/git-tidy.git
-cd git-tidy
-
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Link globally
-npm link
-```
-
 ## Usage
 
-Simply run `git-tidy` in any git repository:
+No install needed — run it directly in any git repository with `npx`:
 
 ```bash
+npx git-tidy-cli
+```
+
+> The examples below use `git-tidy` for brevity. If you haven't installed it globally,
+> just prefix any command with `npx git-tidy-cli` instead — e.g. `npx git-tidy-cli --merged --json`.
+
+### Install (optional)
+
+Prefer a shorter command? Install it globally so you can run `git-tidy` directly:
+
+```bash
+npm install -g git-tidy-cli
 git-tidy
 ```
+
+<details>
+<summary>From source</summary>
+
+```bash
+git clone https://github.com/ArmandBrworworworx/git-tidy.git
+cd git-tidy
+npm install
+npm run build
+npm link
+```
+</details>
 
 ### Options
 
@@ -71,8 +71,8 @@ git-tidy
 ### Examples
 
 ```bash
-# Interactive mode (dry-run by default)
-git-tidy
+# Interactive mode (dry-run by default) — no install needed
+npx git-tidy-cli
 
 # Actually delete branches
 git-tidy --execute
