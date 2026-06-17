@@ -10,7 +10,7 @@
   "files": [
     "dist",
     "bin",
-    ".claude/skills",
+    "skills",
     "README.md",
     "LICENSE"
   ],

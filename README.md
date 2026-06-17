@@ -141,27 +141,28 @@ Example `--json` output:
 The process exits non-zero if a deletion fails (or on invalid input), so scripts can
 check the exit code. Protected and current branches are always excluded automatically.
 
-## AI agent skill
+## AI agent guide
 
-This repo ships a [Claude Code](https://claude.com/claude-code) **skill** that teaches an
-AI agent how to use git-tidy safely (preview-first workflow, the safety model, and the
-filter recipes). It lives at [`.claude/skills/git-tidy/`](.claude/skills/git-tidy/).
+This repo ships an **agent skill** at [`skills/git-tidy/`](skills/git-tidy/) — a portable
+markdown guide ([`SKILL.md`](skills/git-tidy/SKILL.md) + [`EXAMPLES.md`](skills/git-tidy/EXAMPLES.md),
+with YAML frontmatter) that teaches any AI coding agent to use git-tidy safely: the
+preview-first workflow, the safety model, and the filter recipes. It's not tied to any
+specific agent — it's just instructions an agent reads.
 
-To install it for your agent, copy it into your skills directory:
+Use it with whatever agent you run:
 
-```bash
-# user-level (available in all repos)
-cp -r .claude/skills/git-tidy ~/.claude/skills/
+- **Skill/plugin-aware agents** (e.g. Claude Code): copy the folder into your skills
+  directory — `cp -r skills/git-tidy ~/.claude/skills/`.
+- **Rules/context-based agents** (e.g. Cursor, Windsurf): point a rule at
+  `skills/git-tidy/SKILL.md`, or paste its contents into your agent's context/config.
+- **Any agent:** it's plain markdown — hand it the file.
 
-# or project-level (this repo only) — already present here
-```
+If you installed git-tidy from npm, the guide is bundled at
+`node_modules/git-tidy-cli/skills/git-tidy/`.
 
-If you installed git-tidy from npm, the skill is also bundled in the package at
-`node_modules/git-tidy-cli/.claude/skills/git-tidy/`.
-
-Once installed, ask your agent things like *"tidy up the merged branches older than 90
-days on origin"* and it will run the dry-run, show you the matches, and delete only after
-you confirm.
+Once your agent has it, ask things like *"tidy up the merged branches older than 90 days
+on origin"* — it will run the dry-run, show you the matches, and delete only after you
+confirm.
 
 ## Workflow
 
