@@ -81,7 +81,7 @@ export function App({ options }: AppProps) {
         if (info?.isGitHub && (options.token || process.env.GITHUB_TOKEN)) {
           // Get default branch from GitHub API
           setLoadingMessage('Fetching repository info from GitHub...');
-          const defaultBranch = await getDefaultBranch(info.owner, info.repo);
+          const defaultBranch = await getDefaultBranch(info.owner, info.repo, info.defaultBranch);
           info = { ...info, defaultBranch };
         }
 

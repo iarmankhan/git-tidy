@@ -22,24 +22,9 @@ export async function fetchBranches(
 
   if (scope === 'remote' || scope === 'both') {
     const remoteBranches = await getRemoteBranches(defaultBranch);
-
-    // If 'both', merge remote info with local branches
-    if (scope === 'both') {
-      for (const remoteBranch of remoteBranches) {
-        const existingIndex = branches.findIndex(
-          (b) => b.name === remoteBranch.name
-        );
-        if (existingIndex >= 0) {
-          // Branch exists locally and remotely
-          branches[existingIndex].isRemote = true;
-        } else {
-          // Remote-only branch
-          branches.push(remoteBranch);
-        }
-      }
-    } else {
-      branches = remoteBranches;
-    }
+    // A local branch and its remote namesake can point to different commits.
+    // Keep their filter results and deletion choices separate.
+    branches = [...branches, ...remoteBranches];
   }
 
   return branches;

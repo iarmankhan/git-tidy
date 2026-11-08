@@ -134,7 +134,7 @@ export function ExecutionStep({
         <Text color="gray">Results:</Text>
         <Box marginLeft={2} flexDirection="column">
           {results.slice(-8).map((result, index) => (
-            <Box key={result.branch.name} gap={1}>
+            <Box key={`${result.branch.isRemote ? 'remote' : 'local'}:${result.branch.name}`} gap={1}>
               <Text color={result.success ? 'green' : 'red'}>
                 {result.success ? '✓' : '✗'}
               </Text>

@@ -79,7 +79,7 @@ export function ConfirmStep({
         <Text color="gray">Branches to delete:</Text>
         <Box marginLeft={2} flexDirection="column">
           {branches.slice(0, 10).map((branch) => (
-            <Text key={branch.name} color="gray">
+            <Text key={`${branch.isRemote ? 'remote' : 'local'}:${branch.name}`} color="gray">
               - {branch.name}{' '}
               <Text dimColor>
                 ({branch.isLocal && 'local'}

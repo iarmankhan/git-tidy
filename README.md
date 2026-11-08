@@ -11,7 +11,7 @@ An interactive CLI tool for cleaning up unused git branches. Built with [Ink](ht
   - Stale branches (no commits in X days)
   - Age-based (branches older than X days)
   - Pattern matching (e.g., `feature/*`, `hotfix/*`)
-- **Smart defaults** - Auto-detects default branch via GitHub API
+- **Default branch detection** - Uses the local `origin/HEAD` reference, or the GitHub API when a token is available
 - **Batch selection** - Select all, none, or invert selection with keyboard shortcuts
 - **Local & remote** - Delete both local and remote branches in one go
 - **Delete after dry-run** - Option to execute deletion right after reviewing dry-run results
@@ -58,15 +58,17 @@ npm link
 | `-y, --yes` | Skip confirmations (for scripting) |
 | `-t, --token <token>` | GitHub personal access token (or use `GITHUB_TOKEN` env) |
 | `--json` | Output machine-readable JSON (implies non-interactive mode) |
-| `--scope <scope>` | Branch scope: `local`, `remote`, or `both` (default: `both`) |
+| `--scope <scope>` | Branch scope: `local`, `remote`, or `both` (default: `both`). In `both`, local and remote branches are listed separately, even when they share a name. |
 | `--match <mode>` | How filters combine: `any` (OR, default) or `all` (AND) |
 | `--merged` | Select branches already merged into the default branch |
 | `--stale [days]` | Select branches with no commits in N days (default: 30) |
-| `--age [days]` | Select branches older than N days (default: 60) |
+| `--age [days]` | Select branches whose tip commit's author date is older than N days (default: 60) |
 | `--newer-than [days]` | Select branches with a commit within the last N days (default: 7) |
 | `--pattern <glob>` | Select branches whose name matches a glob (e.g. `"feature/*"`) |
 | `-V, --version` | Show version |
 | `-h, --help` | Show help |
+
+Merge status is checked against the detected default branch. If `origin/HEAD` is absent and no GitHub token is provided, the CLI falls back to `main`; check the reported default branch before deleting anything.
 
 ### Examples
 

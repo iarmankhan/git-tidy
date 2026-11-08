@@ -10,6 +10,10 @@ interface BranchSelectStepProps {
   onBack: () => void;
 }
 
+function branchKey(branch: Branch): string {
+  return `${branch.isRemote ? 'remote' : 'local'}:${branch.name}`;
+}
+
 export function BranchSelectStep({
   branches,
   onSelect,
@@ -32,7 +36,7 @@ export function BranchSelectStep({
 
       return {
         label: `${branch.name}`,
-        value: branch.name,
+        value: branchKey(branch),
         hint: `(${status}, ${age}, ${location})`,
       };
     });
@@ -46,14 +50,14 @@ export function BranchSelectStep({
 
     // Submit on Enter
     if (key.return && selectedValues.length > 0) {
-      const selected = branches.filter((b) => selectedValues.includes(b.name));
+      const selected = branches.filter((b) => selectedValues.includes(branchKey(b)));
       onSelect(selected);
       return;
     }
 
     // Select all
     if (input === 'a') {
-      setSelectedValues(branches.map((b) => b.name));
+      setSelectedValues(branches.map(branchKey));
       setSelectKey(k => k + 1);
     }
 
@@ -66,8 +70,8 @@ export function BranchSelectStep({
     // Invert selection
     if (input === 'i') {
       const inverted = branches
-        .filter((b) => !selectedValues.includes(b.name))
-        .map((b) => b.name);
+        .filter((b) => !selectedValues.includes(branchKey(b)))
+        .map(branchKey);
       setSelectedValues(inverted);
       setSelectKey(k => k + 1);
     }
@@ -78,7 +82,7 @@ export function BranchSelectStep({
   };
 
   const handleSubmit = () => {
-    const selected = branches.filter((b) => selectedValues.includes(b.name));
+    const selected = branches.filter((b) => selectedValues.includes(branchKey(b)));
     onSelect(selected);
   };
 

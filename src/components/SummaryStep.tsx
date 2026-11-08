@@ -98,7 +98,7 @@ export function SummaryStep({ summary, isDryRun, onDeleteForReal }: SummaryStepP
               .filter((r) => !r.success)
               .slice(0, 5)
               .map((result) => (
-                <Text key={result.branch.name} color="red">
+                <Text key={`${result.branch.isRemote ? 'remote' : 'local'}:${result.branch.name}`} color="red">
                   - {result.branch.name}: {result.error}
                 </Text>
               ))}

@@ -176,11 +176,9 @@ export async function getRemoteBranches(defaultBranch: string): Promise<Branch[]
  */
 export async function isBranchMerged(branch: string, target: string): Promise<boolean> {
   try {
-    const result = await git.raw(['branch', '--merged', target]);
-    const mergedBranches = result
-      .split('\n')
-      .map((b) => b.trim().replace(/^\*\s*/, ''));
-    return mergedBranches.includes(branch) || mergedBranches.includes(branch.replace(/^origin\//, ''));
+    const branchHead = await git.revparse([branch]);
+    const mergeBase = await git.raw(['merge-base', branch, target]);
+    return branchHead.trim() === mergeBase.trim();
   } catch {
     return false;
   }
@@ -208,11 +206,25 @@ export async function getRepoInfo(defaultBranch?: string): Promise<RepoInfo | nu
   try {
     const currentBranch = await getCurrentBranch();
     const remoteInfo = await getRemoteInfo();
+    let detectedDefaultBranch = defaultBranch;
+
+    if (!detectedDefaultBranch) {
+      try {
+        const originHead = (await git.raw([
+          'symbolic-ref', '--quiet', '--short', 'refs/remotes/origin/HEAD',
+        ])).trim();
+        if (originHead.startsWith('origin/')) {
+          detectedDefaultBranch = originHead.slice('origin/'.length);
+        }
+      } catch {
+        // Some repositories have no origin/HEAD; retain the existing fallback.
+      }
+    }
 
     return {
       owner: remoteInfo?.owner || '',
       repo: remoteInfo?.repo || '',
-      defaultBranch: defaultBranch || 'main',
+      defaultBranch: detectedDefaultBranch || 'main',
       currentBranch,
       isGitHub: remoteInfo?.isGitHub || false,
     };
