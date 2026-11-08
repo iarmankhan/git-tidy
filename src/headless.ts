@@ -71,7 +71,7 @@ export async function runHeadless(options: CLIOptions): Promise<number> {
     return fail('Could not read repository information.');
   }
   if (info.isGitHub && hasToken) {
-    info = { ...info, defaultBranch: await getDefaultBranch(info.owner, info.repo) };
+    info = { ...info, defaultBranch: await getDefaultBranch(info.owner, info.repo, info.defaultBranch) };
   }
 
   const allBranches = await fetchBranches(options.scope, info.defaultBranch, info.currentBranch);

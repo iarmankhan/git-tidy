@@ -17,6 +17,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "test": "npm run build && node --test tests/*.test.mjs",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"

@@ -25,9 +25,9 @@ export function isAuthenticated(): boolean {
 /**
  * Get the default branch for a repository
  */
-export async function getDefaultBranch(owner: string, repo: string): Promise<string> {
+export async function getDefaultBranch(owner: string, repo: string, fallback = 'main'): Promise<string> {
   if (!octokit) {
-    return 'main'; // Fallback if not authenticated
+    return fallback;
   }
 
   try {
@@ -35,7 +35,7 @@ export async function getDefaultBranch(owner: string, repo: string): Promise<str
     return data.default_branch;
   } catch (error) {
     console.error('Error fetching default branch:', error);
-    return 'main';
+    return fallback;
   }
 }
 
