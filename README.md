@@ -41,7 +41,7 @@ git-tidy
 <summary>From source</summary>
 
 ```bash
-git clone https://github.com/ArmandBrworworworx/git-tidy.git
+git clone https://github.com/iarmankhan/git-tidy.git
 cd git-tidy
 npm install
 npm run build
@@ -187,6 +187,17 @@ origin"* — it'll dry-run, show you the matches, and delete only after you conf
 - **Protected branches** - Automatically protects `main`, `master`, `develop`, and the repository's default branch
 - **Current branch protection** - Never deletes the branch you're currently on
 - **Confirmation step** - Always shows a summary before any deletion
+
+## How it is structured
+
+- `src/cli.ts` parses the command line and selects the interactive or headless path.
+- `src/services/branch-analyzer.ts` gathers branch facts and applies the selected criteria.
+- `src/services/git.ts` performs local and remote Git operations; `src/services/github.ts` helps identify the default branch.
+- `src/app.tsx` and `src/components/` implement the terminal wizard, while `src/headless.ts` formats non-interactive results.
+
+The same selection logic serves both interfaces. The default is preview-only; an explicit execute action is required before deletion. For a quick check without touching branches, run `npx git-tidy-cli --merged --scope local --json` in a repository.
+
+This repository does not currently include a committed screenshot or automated test suite. The available checks are `npm run typecheck` and `npm run build`.
 
 ## Tech Stack
 
