@@ -37,12 +37,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArmandBrworworworx/git-tidy.git"
+    "url": "git+https://github.com/iarmankhan/git-tidy.git"
   },
   "bugs": {
-    "url": "https://github.com/ArmandBrworworworx/git-tidy/issues"
+    "url": "https://github.com/iarmankhan/git-tidy/issues"
   },
-  "homepage": "https://github.com/ArmandBrworworworx/git-tidy#readme",
+  "homepage": "https://github.com/iarmankhan/git-tidy#readme",
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
     "@octokit/rest": "^22.0.1",
